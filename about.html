@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>About — Yi Hui's internet home</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --ink: #12566d;
+    --lav: #aa8dab;
+    --lav-dim: rgba(170,141,171,0.6);
+    --nav-bg: rgba(242,249,255,0.5);
+    --paper: #f4f7fa;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: #fff;
+    color: #000;
+    font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .nav-bg-fill {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 72px;
+    z-index: 1;
+    background: var(--nav-bg);
+    backdrop-filter: blur(2px);
+  }
+  body.is-mobile .nav-bg-fill { display: none; }
+
+  /* ---------- Scale stage: fixed 1512-wide design, scaled as one
+       unit to fit the screen width (never past its true 1:1 size).
+       Unlike the home page, this page's content is taller than one
+       screen by design, so it scrolls naturally — height is NOT
+       fit-capped here. ---------- */
+  .stage-wrap {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    overflow: hidden;
+  }
+  .canvas {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    margin-left: -756px; /* half of 1512px design width, for centering */
+    width: 1512px;
+    height: 1300px; /* fallback; JS sets the real height per active tab */
+    transform-origin: top center;
+  }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 72px;
+    z-index: 3;
+  }
+  .nav-title {
+    position: absolute;
+    left: 40px; top: 25px;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 17px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .nav-links {
+    position: absolute;
+    left: 231px; top: 27px;
+    font-style: italic;
+    font-size: 12px;
+    line-height: 15px;
+    color: var(--lav);
+    white-space: nowrap;
+  }
+  .nav-links a { color: inherit; text-decoration: none; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-links a.current { text-decoration: underline; text-decoration-skip-ink: none; }
+  .nav-feeling {
+    position: absolute;
+    right: 40px; top: 19px;
+    width: 230px;
+    text-align: left;
+    font-style: italic;
+    font-size: 12px;
+    line-height: 17px;
+    color: var(--lav);
+    cursor: default;
+    transition: color .35s ease;
+  }
+  .nav-feeling:hover { color: var(--lav-dim); }
+  .nav-feeling p { margin: 0; }
+
+  /* ---------- Feeling hover photo (top right) — same behaviour as Home ---------- */
+  .feeling-photo {
+    position: fixed;
+    right: 40px; top: 60px;
+    width: 322px; height: 429px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity .5s ease, transform .5s ease;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 4;
+  }
+  .feeling-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .feeling-photo.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  /* ---------- Social row: sits as a footer at the true end of the
+       page (About scrolls, unlike Home, so this stays in normal flow
+       instead of floating fixed over content as you scroll). ---------- */
+  .social-row {
+    max-width: 1512px;
+    margin: 0 auto;
+    padding: 24px 40px 48px;
+    text-align: right;
+    font-size: 13px;
+    color: var(--lav);
+  }
+  .social-row a { color: inherit; text-decoration: none; transition: color 0.35s ease; }
+  .social-row a:hover { color: var(--lav-dim); }
+
+  /* ---------- Header: portrait photo + intro text ---------- */
+  .about-header {
+    position: absolute;
+    left: 40px; top: 108px;
+    width: 1233px; height: 593px;
+  }
+  .about-photo {
+    position: absolute;
+    left: 0; top: 0;
+    width: 445px; height: 593px;
+    overflow: hidden;
+  }
+  .about-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .about-heading {
+    position: absolute;
+    left: 493px; top: 331px;
+    width: 687px;
+    height: 160px;
+    overflow: visible;
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: #000;
+  }
+  .about-heading p { margin: 0; }
+  .about-body {
+    position: absolute;
+    left: 493px; top: 473px;
+    width: 740px;
+    height: 160px;
+    overflow: visible;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.28;
+    color: #000;
+  }
+  .about-body p { margin: 0; }
+
+  /* ---------- Sub-nav (tabs) ---------- */
+  .sub-nav {
+    position: absolute;
+    left: 40px; top: 763px;
+    display: flex;
+    gap: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .sub-nav button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: 'Libre Baskerville', Georgia, serif;
+  }
+  .sub-nav button:hover { color: var(--lav); }
+  .sub-nav button.active { font-style: italic; }
+
+  /* ---------- Tab panels: each is a full-canvas-width absolute
+       layer, so its children can use exact Figma coordinates
+       directly (same system as the header above). ---------- */
+  .tab-panel { position: absolute; left: 0; top: 0; width: 1512px; display: none; }
+  .tab-panel.active { display: block; }
+
+  /* "Now": category rows. cat-desc's left edge (533px) is the same
+     x as the body paragraph in the header above, so they line up —
+     that's the alignment your annotation pointed at. */
+  .cat-row { position: absolute; left: 0; width: 1512px; }
+  .cat-label {
+    position: absolute;
+    right: 1020px;
+    top: 0;
+    text-align: right;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+    white-space: nowrap;
+  }
+  .cat-desc {
+    position: absolute;
+    left: 533px;
+    top: 0;
+    width: 740px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #000;
+  }
+
+  /* "Why internet home" */
+  .why-photo {
+    position: absolute;
+    left: 240px; top: 842px;
+    width: 245px; height: 327px;
+    overflow: hidden;
+  }
+  .why-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .why-text {
+    position: absolute;
+    left: 533px; top: 842px;
+    width: 740px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.55;
+    color: #000;
+  }
+  .why-text p { margin: 0 0 1em; }
+  .why-text p:last-child { margin-bottom: 0; }
+  .why-text a {
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  .why-text a:hover { color: var(--lav); }
+
+  /* "Favourites": a 3-across grid of category cards. Hovering a card
+     dims its image and reveals a list for that category — the
+     mechanism your Figma "Anime" card showed. Only Anime has real
+     content right now, so the rest stay as plain "coming soon"
+     tiles rather than inventing categories that don't exist yet. */
+  .fav-intro {
+    position: absolute;
+    left: 40px; top: 842px;
+    width: 1432px;
+    font-size: 14px;
+    color: #000;
+  }
+  .fav-intro p { margin: 0 0 16px; }
+  .fav-intro p:last-child { margin-bottom: 0; }
+  .fav-intro .fav-quote { font-style: italic; }
+  .fav-grid {
+    position: absolute;
+    left: 0; top: 962px;
+    width: 1512px;
+    display: grid;
+    grid-template-columns: repeat(3, 504px);
+  }
+  .fav-card {
+    position: relative;
+    width: 504px; height: 447px;
+    overflow: hidden;
+    background: var(--paper);
+    border-right: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    box-sizing: border-box;
+  }
+  .fav-grid > .fav-card:nth-child(3n+1) { border-left: 1px solid var(--ink); }
+  .fav-grid > .fav-card:nth-child(-n+3) { border-top: 1px solid var(--ink); }
+  .fav-card.has-content { cursor: pointer; }
+  .fav-card-media {
+    position: absolute;
+    left: 24px; top: 24px; right: 24px; bottom: 64px;
+    overflow: hidden;
+  }
+  .fav-card-media img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: opacity 0.4s ease;
+  }
+  .fav-card .fav-label {
+    position: absolute;
+    left: 0; right: 0; bottom: 24px;
+    text-align: center;
+    font-size: 14px;
+    color: #000;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .fav-card .fav-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: #f5e8f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 40px 56px;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    box-sizing: border-box;
+  }
+  .fav-card.has-content:hover .fav-card-media img { opacity: 0.15; }
+  .fav-card.has-content:hover .fav-overlay,
+  .fav-card.placeholder.hoverable:hover .fav-overlay { opacity: 1; pointer-events: auto; }
+  .fav-overlay h4 { margin: 0 0 14px; font-size: 14px; font-weight: 700; color: var(--ink); }
+  .fav-overlay ul { list-style: disc; margin: 0; padding-left: 20px; text-align: left; font-size: 13px; line-height: 1.7; color: #000; max-width: 320px; }
+  .fav-overlay .fav-more { margin-top: 14px; font-size: 13px; }
+  .fav-overlay .fav-more a { color: var(--ink); text-decoration: none; transition: color 0.3s ease; }
+  .fav-overlay .fav-more a:hover { color: var(--lav); }
+
+  .fav-card.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper);
+    box-sizing: border-box;
+  }
+  .fav-card.placeholder span {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--lav);
+  }
+  .fav-card.placeholder.hoverable {
+    cursor: pointer;
+    transition: background 0.4s ease;
+  }
+  .fav-card.placeholder.hoverable:hover {
+    background: #f5e8f5;
+  }
+  .fav-card.placeholder.hoverable:hover > span { opacity: 0; }
+  .fav-card.placeholder.hoverable .fav-overlay { background: transparent; }
+
+  .tab-placeholder {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--lav);
+  }
+
+  /* ---------- Mobile ---------- */
+  body.is-mobile .stage-wrap { overflow: visible; }
+  body.is-mobile .canvas {
+    position: static !important;
+    left: auto !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    transform: none !important;
+    padding: 88px 6% 64px;
+  }
+  body.is-mobile .nav {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: auto;
+    background: var(--nav-bg);
+    backdrop-filter: blur(2px);
+    padding: 12px 5%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    row-gap: 6px;
+    z-index: 10;
+  }
+  body.is-mobile .nav-title { position: static; font-size: 12px; }
+  body.is-mobile .nav-links { position: static; font-size: 12px; white-space: normal; }
+  body.is-mobile .nav-feeling { display: none; }
+  body.is-mobile .feeling-photo { display: none; }
+  body.is-mobile .social-row {
+    max-width: none;
+    width: 100%;
+    text-align: left;
+    padding: 0 6%;
+    margin-top: 40px;
+  }
+
+  body.is-mobile .about-header { position: static; width: 100%; height: auto; }
+  body.is-mobile .about-photo { position: static; width: 100%; height: 60vw; max-height: 420px; margin-bottom: 24px; }
+  body.is-mobile .about-heading,
+  body.is-mobile .about-body {
+    position: static;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  body.is-mobile .about-heading { font-size: 24px; }
+
+  body.is-mobile .sub-nav { position: static; margin: 32px 0 24px; flex-wrap: wrap; row-gap: 8px; }
+  body.is-mobile .tab-panel { position: static; width: 100%; }
+
+  body.is-mobile .cat-row { position: static; width: 100%; margin-bottom: 24px; display: block; }
+  body.is-mobile .cat-label { position: static; text-align: left; margin-bottom: 4px; display: block; }
+  body.is-mobile .cat-desc { position: static; width: 100%; display: block; }
+
+  body.is-mobile .why-photo { position: static; width: 100%; height: 60vw; max-height: 360px; margin-bottom: 20px; }
+  body.is-mobile .why-text { position: static; width: 100%; }
+
+  body.is-mobile .fav-intro { position: static; width: 100%; margin-bottom: 24px; }
+  body.is-mobile .fav-grid { position: static; width: 100%; display: block; }
+  body.is-mobile .fav-card { width: 100%; height: 68vw; max-height: 420px; margin-bottom: 12px; border: 1px solid var(--ink); }
+  body.is-mobile .fav-card .fav-overlay { padding: 24px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="nav-bg-fill" id="navBgFill"></div>
+
+  <nav class="nav">
+        <div class="nav-title">Yi Hui&rsquo;s internet home</div>
+        <div class="nav-links">
+          <a href="https://claude.ai/artifact/8LuVb1cvQ41HzTNUvEJwmJ">Home</a>, <a href="about.html" class="current">About</a>, <a href="#">Blog</a>, <a href="#">Work</a>
+        </div>
+        <div class="nav-feeling" id="feelingTrigger">
+          <p>Currently feeling&hellip;</p>
+          <p>Missing the ocean breeze in Okinawa</p>
+        </div>
+      </nav>
+
+  <div class="feeling-photo" id="feelingPhoto">
+        <img src="assets/images/IMG_9708.JPG" alt="Beach umbrellas, Okinawa">
+      </div>
+
+  <div class="stage-wrap" id="stageWrap">
+    <div class="canvas" id="canvas">
+      
+
+      <div class="about-header">
+        <div class="about-photo">
+          <!-- PLACEHOLDER: swap in your actual portrait photo (Figma "image 19") -->
+          <img src="assets/images/IMG_1587.png" alt="Yi Hui, portrait photo">
+        </div>
+        <div class="about-heading">
+          <p>Yi Hui is an internet surfer and gardener, reader, writer, artist, creator, tech worker, dreamer, lover of life, and more.</p>
+        </div>
+        <div class="about-body">
+          <p>I try to stay close to wonder and move through life with curiosity. I don&rsquo;t think it&rsquo;s a naive way to live, because it&rsquo;s the most honest way to be alive. My simplest pleasures are taking a walk, being by the ocean, and Frieren.</p>
+          <p>&nbsp;</p>
+          <p>I&rsquo;m exploring the intersection between art, design, and technology. Shaped by years of internet culture and subculture, my relationship with the internet is what drives my interest in building an internet that&rsquo;s more alive.</p>
+        </div>
+      </div>
+
+      <div class="sub-nav" id="subNav">
+        <button type="button" class="active" data-tab="now" data-h="1300">Now</button>
+        <button type="button" data-tab="why" data-h="1300">Why internet home</button>
+        <button type="button" data-tab="favourites" data-h="2790">Favourites</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-now">
+        <div class="cat-row" style="top:842px">
+          <div class="cat-label">Internet</div>
+          <div class="cat-desc">I&rsquo;m dreaming about an internet that is softer and more alive. I&rsquo;m currently planning what&rsquo;s next for my Instagram about building a softer internet.</div>
+        </div>
+        <div class="cat-row" style="top:912px">
+          <div class="cat-label">Art &amp; Technology</div>
+          <div class="cat-desc">In August, I wrapped up a group art exhibition (Garden Symphony) that me and my close friends put together. I had an art piece, connecting what I do online in a physical art form. I&rsquo;m wondering what&rsquo;s next after this.</div>
+        </div>
+        <div class="cat-row" style="top:999px">
+          <div class="cat-label">Writing</div>
+          <div class="cat-desc">I&rsquo;m dreaming about an internet that is softer and more alive. I&rsquo;m currently planning what&rsquo;s next for my Instagram about building a softer internet.</div>
+        </div>
+        <div class="cat-row" style="top:1069px">
+          <div class="cat-label">Photos &amp; Filming</div>
+          <div class="cat-desc">I like taking photos and filming, sometimes film photos too. I&rsquo;m immortalising my recent trip to Seoul &amp; Busan (South Korea) and Okinawa (Japan) on my travel account. I have more than enough travel content to cover for one month.</div>
+        </div>
+        <div class="cat-row" style="top:1156px">
+          <div class="cat-label">Internet</div>
+          <div class="cat-desc">I&rsquo;m dreaming about an internet that is softer and more alive. I&rsquo;m currently planning what&rsquo;s next for my Instagram about building a softer internet.</div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-why">
+        <div class="why-photo">
+          <img src="assets/images/why-internet.png" alt="Placeholder photo">
+        </div>
+        <div class="why-text">
+          <p>I was never a quiet and reserved child, but school ruined it for me. I didn&rsquo;t have a place that I feel like I belonged, so I made the internet my home. I became an <a href="https://yihuichan.com/why-being-an-internet-native-means-a-lot-to-me" target="_blank" rel="noopener">internet native</a>. Some of my early internet rabbit holes were FanFiction, DeviantArt, Blogger, Tumblr, and even built my own fan website. It was my refuge at first, then it became a place to express myself more freely and as authentic as I can be in my adolescence.</p>
+          <p>I want to continue the era of &ldquo;surfing the internet&rdquo; when we weren&rsquo;t absorbed with algorithms, metrics, and &ldquo;content&rdquo;.</p>
+          <p>I&rsquo;m continuously growing this internet space into somewhere comfy that I can return to anytime, hopefully inspiring others to create their own. And to contribute in <a href="https://twitter.com/empirepowder/status/1585919870524305408?ref=yihuichan.com" target="_blank" rel="noopener">building the internet that I want to see more of</a> &ndash; something cosier, softer, more thoughtful, more alive.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-favourites">
+        <div class="fav-intro">
+          <p class="fav-quote">&ldquo;Do I contradict myself? Very well then I contradict myself. I am large, I contain multitudes.&rdquo; &ndash; Walt Whitman</p>
+          <p>I like lists, so here are some lists of my favourites. Most of them are my influences too, shaping some of my thoughts and values and who I am today.</p>
+        </div>
+        <div class="fav-grid">
+          <div class="fav-card has-content">
+            <div class="fav-card-media"><img src="assets/images/heike.png" alt="Anime favourites art"></div>
+            <div class="fav-label">Anime</div>
+            <div class="fav-overlay">
+              <ul>
+                <li>Hunter x Hunter</li>
+                <li>Heike Monogatari</li>
+                <li>Frieren</li>
+                <li>Dungeon Meshi</li>
+                <li>Mob Psycho 100</li>
+                <li>Made in Abyss</li>
+                <li>Gurren Lagann</li>
+                <li>A place further than the universe</li>
+                <li>D.Gray-man</li>
+                <li>Katanagatari</li>
+              </ul>
+              <p class="fav-more">In no order. <a href="#">View my full anime list here.</a></p>
+            </div>
+          </div>
+          <div class="fav-card placeholder hoverable">
+            <span>More favourites coming soon</span>
+            <div class="fav-label">Music</div>
+            <div class="fav-overlay">
+              <ul>
+                <li>Placeholder artist 1</li>
+                <li>Placeholder artist 2</li>
+                <li>Placeholder album 3</li>
+              </ul>
+              <p class="fav-more">Placeholder category &ndash; content coming soon.</p>
+            </div>
+          </div>
+          <div class="fav-card placeholder hoverable">
+            <span>More favourites coming soon</span>
+            <div class="fav-label">Books</div>
+            <div class="fav-overlay">
+              <ul>
+                <li>Placeholder title 1</li>
+                <li>Placeholder title 2</li>
+                <li>Placeholder title 3</li>
+              </ul>
+              <p class="fav-more">Placeholder category &ndash; content coming soon.</p>
+            </div>
+          </div>
+          <div class="fav-card placeholder hoverable">
+            <span>More favourites coming soon</span>
+            <div class="fav-label">Film</div>
+            <div class="fav-overlay">
+              <ul>
+                <li>Placeholder film 1</li>
+                <li>Placeholder film 2</li>
+                <li>Placeholder film 3</li>
+              </ul>
+              <p class="fav-more">Placeholder category &ndash; content coming soon.</p>
+            </div>
+          </div>
+          <div class="fav-card placeholder hoverable">
+            <span>More favourites coming soon</span>
+            <div class="fav-label">Games</div>
+            <div class="fav-overlay">
+              <ul>
+                <li>Placeholder game 1</li>
+                <li>Placeholder game 2</li>
+                <li>Placeholder game 3</li>
+              </ul>
+              <p class="fav-more">Placeholder category &ndash; content coming soon.</p>
+            </div>
+          </div>
+          <div class="fav-card placeholder hoverable">
+            <span>More favourites coming soon</span>
+            <div class="fav-label">Design</div>
+            <div class="fav-overlay">
+              <ul>
+                <li>Placeholder item 1</li>
+                <li>Placeholder item 2</li>
+                <li>Placeholder item 3</li>
+              </ul>
+              <p class="fav-more">Placeholder category &ndash; content coming soon.</p>
+            </div>
+          </div>
+          <div class="fav-card placeholder hoverable">
+            <span>More favourites coming soon</span>
+            <div class="fav-label">Food</div>
+            <div class="fav-overlay">
+              <ul>
+                <li>Placeholder item 1</li>
+                <li>Placeholder item 2</li>
+                <li>Placeholder item 3</li>
+              </ul>
+              <p class="fav-more">Placeholder category &ndash; content coming soon.</p>
+            </div>
+          </div>
+          <div class="fav-card placeholder hoverable">
+            <span>More favourites coming soon</span>
+            <div class="fav-label">Travel</div>
+            <div class="fav-overlay">
+              <ul>
+                <li>Placeholder place 1</li>
+                <li>Placeholder place 2</li>
+                <li>Placeholder place 3</li>
+              </ul>
+              <p class="fav-more">Placeholder category &ndash; content coming soon.</p>
+            </div>
+          </div>
+          <div class="fav-card placeholder hoverable">
+            <span>More favourites coming soon</span>
+            <div class="fav-label">Places</div>
+            <div class="fav-overlay">
+              <ul>
+                <li>Placeholder spot 1</li>
+                <li>Placeholder spot 2</li>
+                <li>Placeholder spot 3</li>
+              </ul>
+              <p class="fav-more">Placeholder category &ndash; content coming soon.</p>
+            </div>
+          </div>
+          <div class="fav-card placeholder hoverable">
+            <span>More favourites coming soon</span>
+            <div class="fav-label">Tools</div>
+            <div class="fav-overlay">
+              <ul>
+                <li>Placeholder tool 1</li>
+                <li>Placeholder tool 2</li>
+                <li>Placeholder tool 3</li>
+              </ul>
+              <p class="fav-more">Placeholder category &ndash; content coming soon.</p>
+            </div>
+          </div>
+          <div class="fav-card placeholder hoverable">
+            <span>More favourites coming soon</span>
+            <div class="fav-label">Misc</div>
+            <div class="fav-overlay">
+              <ul>
+                <li>Placeholder item 1</li>
+                <li>Placeholder item 2</li>
+                <li>Placeholder item 3</li>
+              </ul>
+              <p class="fav-more">Placeholder category &ndash; content coming soon.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="social-row"><a href="#">Instagram</a>, <a href="#">Twitter</a>, <a href="#">Are.na</a>, <a href="#">LinkedIn</a>, <a href="#">Substack</a></div>
+
+<script>
+(function () {
+  var stageWrap = document.getElementById('stageWrap');
+  var canvas = document.getElementById('canvas');
+  var navBgFill = document.getElementById('navBgFill');
+  var body = document.body;
+  var DESIGN_W = 1512;
+  var NAV_H = 72;
+  var MOBILE_BREAKPOINT = 720;
+
+  function applyScale() {
+    var vw = window.innerWidth;
+    if (vw <= MOBILE_BREAKPOINT) {
+      body.classList.add('is-mobile');
+      stageWrap.style.height = 'auto';
+      return;
+    }
+    body.classList.remove('is-mobile');
+    var scale = Math.min(vw / DESIGN_W, 1);
+    var h = canvas.offsetHeight;
+    canvas.style.transform = 'scale(' + scale + ')';
+    stageWrap.style.height = (h * scale) + 'px';
+  }
+
+  window.applyScale = applyScale;
+  window.addEventListener('resize', applyScale);
+  applyScale();
+})();
+
+(function () {
+  var feelingTrigger = document.getElementById('feelingTrigger');
+  var feelingPhoto = document.getElementById('feelingPhoto');
+  if (!feelingTrigger || !feelingPhoto) { return; }
+
+  feelingTrigger.addEventListener('mouseenter', function () {
+    feelingPhoto.classList.add('is-visible');
+  });
+  feelingTrigger.addEventListener('mouseleave', function () {
+    feelingPhoto.classList.remove('is-visible');
+  });
+  feelingTrigger.addEventListener('touchstart', function (e) {
+    e.preventDefault();
+    feelingPhoto.classList.toggle('is-visible');
+  }, { passive: false });
+})();
+
+(function () {
+  var canvas = document.getElementById('canvas');
+  var buttons = document.querySelectorAll('.sub-nav button');
+  var panels = document.querySelectorAll('.tab-panel');
+
+  function setCanvasHeightForTab(btn) {
+    var h = btn.getAttribute('data-h');
+    if (h) { canvas.style.height = h + 'px'; }
+    if (window.applyScale) { window.applyScale(); }
+  }
+
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      buttons.forEach(function (b) { b.classList.remove('active'); });
+      panels.forEach(function (p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      setCanvasHeightForTab(btn);
+    });
+  });
+
+  // Set the correct height for whichever tab starts active (Now).
+  var initialBtn = document.querySelector('.sub-nav button.active');
+  if (initialBtn) { setCanvasHeightForTab(initialBtn); }
+})();
+</script>
+</body>
+</html>

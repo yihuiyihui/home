@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yi Hui's internet home</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --ink: #12566d;
+    --lav: #aa8dab;
+    --lav-dim: rgba(170,141,171,0.6);
+    --nav-bg: rgba(242,249,255,0.22);
+    --paper: #f4f7fa;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Ambient looping video background (35% opacity) ---------- */
+  .bg-video-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .bg-video-wrap video {
+    position: absolute;
+    top: 50%; left: 50%;
+    min-width: 100%; min-height: 100%;
+    width: auto; height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    opacity: 0.35;
+  }
+
+  /* ---------- Full-screen ambient photo, revealed on middle-photo hover ---------- */
+  .ambient-fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+  }
+  .ambient-fullscreen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.45) saturate(1.05);
+  }
+  html.photo-hover-active .ambient-fullscreen { opacity: 1; }
+
+  /* ---------- Nav background: spans the FULL viewport edge-to-edge,
+       independent of the scaled canvas, on any screen wider or
+       narrower than the 1512px design. ---------- */
+  .nav-bg-fill {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 72px;
+    z-index: 1;
+    background: var(--nav-bg);
+    backdrop-filter: blur(2px);
+    transition: opacity 0.4s ease;
+  }
+  body.is-mobile .nav-bg-fill { display: none; }
+  html.photo-hover-active .nav-bg-fill { opacity: 0; pointer-events: none; }
+
+  /* ---------- Scale stage: the canvas is a fixed 1512x982 design,
+       scaled as a single unit to fit whatever screen it's on, so
+       every proportion matches the Figma file regardless of screen
+       size — never enlarged past its true 1:1 size, and always fit
+       to both width AND height so nothing needs scrolling. ---------- */
+  .stage-wrap {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    overflow: hidden;
+  }
+  .canvas {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    margin-left: -756px; /* half of 1512px design width, for centering */
+    width: 1512px;
+    height: 982px;
+    transform-origin: top center;
+  }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 72px;
+    z-index: 3;
+    transition: opacity 0.4s ease;
+  }
+  .nav-title {
+    position: absolute;
+    left: 40px; top: 25px;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 17px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .nav-links {
+    position: absolute;
+    left: 231px; top: 27px;
+    font-style: italic;
+    font-size: 12px;
+    line-height: 15px;
+    color: var(--lav);
+    white-space: nowrap;
+  }
+  .nav-links a { color: inherit; text-decoration: none; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-feeling {
+    position: absolute;
+    right: 40px; top: 19px;
+    width: 230px;
+    text-align: left;
+    font-style: italic;
+    font-size: 12px;
+    line-height: 17px;
+    color: var(--lav);
+    cursor: default;
+    transition: color .35s ease;
+  }
+  .nav-feeling:hover { color: var(--lav-dim); }
+  .nav-feeling p { margin: 0; }
+  html.photo-hover-active .nav-feeling { opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+
+  /* ---------- Feeling hover photo (top right) ---------- */
+  .feeling-photo {
+    position: fixed;
+    right: 40px; top: 60px;
+    width: 322px; height: 429px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity .5s ease, transform .5s ease;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 4;
+  }
+  .feeling-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .feeling-photo.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  /* ---------- Sidebar text blocks (heights match the Figma text-box
+       heights exactly, so spacing stays tight and content stays
+       vertically bounded within the photo's top/bottom edges) ---------- */
+  .block { position: absolute; font-size: 13px; line-height: 1.4; transition: opacity 0.4s ease; overflow: hidden; }
+  .block h3 { margin: 0; font-weight: 700; font-size: inherit; line-height: inherit; color: var(--ink); }
+  .block ul { list-style: none; margin: 0; padding: 0; }
+  .block li { color: var(--lav); }
+  .block a { color: inherit; text-decoration: none; transition: color 0.35s ease; }
+  .block a:hover { color: var(--lav-dim); }
+
+  .selected-works { left: 163px; top: 275px; width: 186px; height: 75px; }
+  .media-rotation { left: 166px; top: 611px; width: 183px; height: 90px; }
+
+  /* ---------- Center photo ---------- */
+  .photo-stage {
+    position: absolute;
+    left: 398px; top: 275px;
+    width: 715px; height: 432px;
+    z-index: 2;
+  }
+  .photo-box {
+    position: relative;
+    width: 100%; height: 100%;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .photo-box img.main-photo {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* text sits INSIDE the photo box, at the exact Figma coordinates,
+     each with a hard height + overflow:hidden so it can never break
+     past the edge of the photo. */
+  .intro-text, .caption-text {
+    position: absolute;
+    color: #fff;
+    z-index: 2;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+    overflow: hidden;
+  }
+  .intro-text {
+    left: 24px; top: 288px;
+    width: 493px; height: 120px;
+    font-size: 12px;
+    line-height: 1.25;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+  }
+  .caption-text {
+    left: 28px; top: 344px;
+    width: 488px; height: 60px;
+    font-size: 12px;
+    line-height: 1.3;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+  }
+  .photo-stage.is-hovering .intro-text { opacity: 0; }
+  .photo-stage.is-hovering .caption-text { opacity: 1; transform: translateY(0); }
+
+  .intro-text p, .caption-text p { margin: 0; }
+
+  /* ---------- Social row ---------- */
+  .social-row {
+    position: fixed;
+    right: 40px; bottom: 40px;
+    width: 287px;
+    text-align: right;
+    font-size: 13px;
+    color: var(--lav);
+    white-space: nowrap;
+    z-index: 2;
+    transition: opacity 0.4s ease;
+  }
+  .social-row a { color: inherit; text-decoration: none; transition: color 0.35s ease; }
+  .social-row a:hover { color: var(--lav-dim); }
+
+  /* ---------- Hide chrome while the center photo is hovered ---------- */
+  html.photo-hover-active .nav,
+  html.photo-hover-active .selected-works,
+  html.photo-hover-active .media-rotation,
+  html.photo-hover-active .social-row {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ---------- Mobile: nav stays visible (title + links), everything
+       else flows in a simple single column. ---------- */
+  body.is-mobile .stage-wrap { overflow: visible; }
+  body.is-mobile .canvas {
+    position: static !important;
+    left: auto !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    transform: none !important;
+    padding: 92px 6% 56px;
+  }
+  body.is-mobile .nav {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: auto;
+    min-height: 56px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(2px);
+    padding: 12px 5%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    row-gap: 6px;
+    z-index: 10;
+  }
+  body.is-mobile .nav-title {
+    position: static;
+    font-size: 12px;
+    line-height: normal;
+  }
+  body.is-mobile .nav-links {
+    position: static;
+    font-size: 12px;
+    line-height: normal;
+    white-space: normal;
+  }
+  body.is-mobile .nav-feeling { display: none; }
+  body.is-mobile .feeling-photo { display: none; }
+  body.is-mobile .ambient-fullscreen { display: none; }
+
+  body.is-mobile .selected-works,
+  body.is-mobile .media-rotation,
+  body.is-mobile .photo-stage {
+    position: static;
+    width: 100%;
+    height: auto;
+    left: auto; top: auto;
+    overflow: visible;
+    line-height: 1.9;
+  }
+  body.is-mobile .social-row {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: auto;
+    left: auto; top: auto; right: auto; bottom: auto;
+    overflow: visible;
+    line-height: 1.9;
+    padding: 0 6%;
+  }
+  body.is-mobile .selected-works { margin-bottom: 32px; }
+  /* Mobile: the box grows to fit the image AND the text below it
+     (rather than a fixed height that only fit the image), so the
+     caption isn't cut off or overlapping the next section. */
+  body.is-mobile .photo-stage { height: auto; margin-bottom: 20px; }
+  body.is-mobile .photo-box { overflow: visible; height: auto; }
+  body.is-mobile .photo-box img.main-photo {
+    position: static;
+    width: 100%; height: 60vw; max-height: 420px;
+    display: block;
+  }
+  body.is-mobile .intro-text {
+    position: static;
+    opacity: 1 !important;
+    width: 100%; height: auto;
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 16px 0 0;
+    color: var(--ink);
+    text-shadow: none;
+  }
+  body.is-mobile .caption-text { display: none; }
+  body.is-mobile .media-rotation { margin-bottom: 32px; }
+  body.is-mobile .social-row { display: block; text-align: left; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="bg-video-wrap">
+    <video autoplay muted loop playsinline>
+      <source src="assets/videos/IMG_9711.mov" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="ambient-fullscreen" id="ambientFullscreen">
+    <img src="assets/images/YH-header.png" alt="">
+  </div>
+
+  <div class="nav-bg-fill" id="navBgFill"></div>
+
+  <nav class="nav">
+        <div class="nav-title">Yi Hui&rsquo;s internet home</div>
+        <div class="nav-links">
+          <a href="https://claude.ai/artifact/8LuVb1cvQ41HzTNUvEJwmJ">Home</a>, <a href="https://claude.ai/artifact/9SoMgGrFKrQALGtRU8JQw9">About</a>, <a href="#">Blog</a>, <a href="#">Work</a>
+        </div>
+        <div class="nav-feeling" id="feelingTrigger">
+          <p>Currently feeling&hellip;</p>
+          <p>Missing the ocean breeze in Okinawa</p>
+        </div>
+      </nav>
+
+  <div class="feeling-photo" id="feelingPhoto">
+        <img src="assets/images/IMG_9708.JPG" alt="Beach umbrellas, Okinawa">
+      </div>
+
+  <div class="stage-wrap" id="stageWrap">
+    <div class="canvas" id="canvas">
+      
+
+      
+
+      <div class="block selected-works">
+        <h3>Selected works</h3>
+        <ul>
+          <li><a href="#">Mid year reflections 2026</a></li>
+          <li><a href="#">Garden Symphony exhibition</a></li>
+          <li><a href="#">HTML energy &ndash; KL</a></li>
+        </ul>
+      </div>
+
+      <div class="block media-rotation">
+        <h3>Current media rotation</h3>
+        <ul>
+          <li><a href="#">FUKT #23 &ndash; The Sound Issue</a></li>
+          <li><a href="#">Blossoms of Power</a></li>
+          <li><a href="#">Ichi the Witch</a></li>
+          <li><a href="#">Yuval Noah Harari&rsquo;s Nexus</a></li>
+        </ul>
+      </div>
+
+      <div class="photo-stage" id="photoStage">
+        <div class="photo-box">
+          <img class="main-photo" src="assets/images/YH-header.png" alt="Coastline at Ibusuki, Kyushu">
+          <div class="intro-text">
+            <p>I&rsquo;m Yi Hui, welcome to my internet home.</p>
+            <p>&nbsp;</p>
+            <p>I&rsquo;m tending to this online space like my own home, where I share about myself, showcase some of my works and projects, and my favourite things. Take your time to browse around. Thank you for visiting.</p>
+            <p>&nbsp;</p>
+            <p>I&rsquo;m currently thinking about personal websites, and how they can bring people closer together on the internet.</p>
+          </div>
+          <div class="caption-text">
+            <p>This photo was taken in March 2026, at the coast at Ibusuki, southwest of Japan on the island of Kyushu.</p>
+            <p>&nbsp;</p>
+            <p>I felt an inexplicable joy running by the sea, forever etched in my memory.</p>
+          </div>
+        </div>
+      </div>
+
+      
+    </div>
+  </div>
+
+  <div class="social-row"><a href="#">Instagram</a>, <a href="#">Twitter</a>, <a href="#">Are.na</a>, <a href="#">LinkedIn</a>, <a href="#">Substack</a></div>
+
+<script>
+(function () {
+  var stageWrap = document.getElementById('stageWrap');
+  var canvas = document.getElementById('canvas');
+  var navBgFill = document.getElementById('navBgFill');
+  var body = document.body;
+  var DESIGN_W = 1512;
+  var DESIGN_H = 982;
+  var NAV_H = 72;
+  var MOBILE_BREAKPOINT = 720;
+
+  function applyScale() {
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    if (vw <= MOBILE_BREAKPOINT) {
+      body.classList.add('is-mobile');
+      stageWrap.style.height = 'auto';
+      return;
+    }
+    body.classList.remove('is-mobile');
+    // Never enlarge past the design's true 1:1 size, and always fit
+    // the full height too, so nothing requires scrolling on landing.
+    var scale = Math.min(vw / DESIGN_W, vh / DESIGN_H, 1);
+    canvas.style.transform = 'scale(' + scale + ')';
+    stageWrap.style.height = (DESIGN_H * scale) + 'px';
+  }
+
+  window.addEventListener('resize', applyScale);
+  applyScale();
+})();
+
+(function () {
+  var feelingTrigger = document.getElementById('feelingTrigger');
+  var feelingPhoto = document.getElementById('feelingPhoto');
+
+  feelingTrigger.addEventListener('mouseenter', function () {
+    feelingPhoto.classList.add('is-visible');
+  });
+  feelingTrigger.addEventListener('mouseleave', function () {
+    feelingPhoto.classList.remove('is-visible');
+  });
+  feelingTrigger.addEventListener('touchstart', function (e) {
+    e.preventDefault();
+    feelingPhoto.classList.toggle('is-visible');
+  }, { passive: false });
+})();
+
+(function () {
+  var stage = document.getElementById('photoStage');
+  var html = document.documentElement;
+  var hoverTimer = null;
+
+  stage.addEventListener('mouseenter', function () {
+    clearTimeout(hoverTimer);
+    hoverTimer = setTimeout(function () {
+      stage.classList.add('is-hovering');
+      html.classList.add('photo-hover-active');
+    }, 300); // 0.3s delay before overlay appears
+  });
+
+  stage.addEventListener('mouseleave', function () {
+    clearTimeout(hoverTimer);
+    stage.classList.remove('is-hovering');
+    html.classList.remove('photo-hover-active');
+  });
+
+  stage.addEventListener('touchstart', function (e) {
+    e.preventDefault();
+    var active = stage.classList.toggle('is-hovering');
+    html.classList.toggle('photo-hover-active', active);
+  }, { passive: false });
+})();
+</script>
+</body>
+</html>
