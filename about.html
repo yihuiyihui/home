@@ -16,7 +16,7 @@
     --ink: #12566d;
     --lav: #aa8dab;
     --lav-dim: rgba(170,141,171,0.6);
-    --nav-bg: rgba(242,249,255,0.22);
+    --nav-bg: rgba(242,249,255,0.92);
     --paper: #f4f7fa;
   }
   html { scroll-padding-top: env(safe-area-inset-top, 0px); }
@@ -30,6 +30,8 @@
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
+  a { color: var(--ink); text-decoration: none; transition: color 0.3s ease; }
+a:hover { color: var(--lav); }
 
   .nav-bg-fill {
     position: fixed;
@@ -38,7 +40,7 @@
     height: 72px;
     z-index: 1;
     background: var(--nav-bg);
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(12px);
   }
   body.is-mobile .nav-bg-fill { display: none; }
 
@@ -94,7 +96,7 @@
   .nav-links a.current { text-decoration: underline; text-decoration-skip-ink: none; }
   .nav-feeling {
     position: absolute;
-    right: 40px; top: 19px;
+    right: calc(50vw - 716px); top: 19px;
     width: 230px;
     text-align: left;
     font-style: italic;
@@ -110,7 +112,7 @@
   /* ---------- Feeling hover photo (top right) — same behaviour as Home ---------- */
   .feeling-photo {
     position: fixed;
-    right: 40px; top: 60px;
+    right: calc(50vw - 716px); top: 60px;
     width: 322px; height: 429px;
     opacity: 0;
     transform: translateY(6px);
@@ -452,7 +454,7 @@
       </div>
 
       <div class="sub-nav" id="subNav">
-        <button type="button" class="active" data-tab="now" data-h="1300">Now</button>
+        <button type="button" class="active" data-tab="now" data-h="1460">Now</button>
         <button type="button" data-tab="why" data-h="1300">Why internet home</button>
         <button type="button" data-tab="favourites" data-h="2790">Favourites</button>
       </div>
@@ -478,15 +480,17 @@
           <div class="cat-label">Fitness</div>
           <div class="cat-desc">I’m lifting weights at the gym a few times a week and running at parks 1-2 a week (though runs are on hold until the haze is gone).</div>
         </div>
-        <div class="cat-row" style="top:1156px">
+        <div class="cat-row" style="top:1240px">
           <div class="cat-label">Misc</div>
           <div class="cat-desc">I’m starting to get more interested in sound lately.</div>
         </div>
-         <div class="cat-row" style="top:1156px">
+         <div class="cat-row" style="top:1300px">
           <div class="cat-label">Work</div>
           <div class="cat-desc"> I work as an independent product designer and UX researcher, with a background in product management in tech. I’m available for remote freelance and consultancy work.</div>
         </div>
-        <p>If you like what I’m doing, support me <a href="https://buymeacoffee.com/chanyihui">here</a> by buying me a cup of tea <3 </p>
+        <div class="cat-row" style="top:1380px">
+          <div class="cat-desc">If you like what I&rsquo;m doing, support me <a href="https://buymeacoffee.com/chanyihui">here</a> by buying me a cup of tea &lt;3</div>
+        </div>
       </div>
 
       <div class="tab-panel" id="tab-why">
@@ -537,6 +541,9 @@
                 <li>Skip to Loafer</li>
                 <li>Dorohedoro</li>
                 <li>Donten ni Warau</li>
+                <li>Kingdom</li>
+                <li>Vagabond</li>
+                <li>Berserk</li>
               </ul>
              <p class="fav-more">In no order. <a href="https://myanimelist.net/mangalist/Castaspell">View my full manga list here.</a></p>
               <p class="fav-more">Photo credit: Ichi the Witch, chapter 73</p>
