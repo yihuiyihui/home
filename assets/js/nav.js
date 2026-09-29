@@ -5,8 +5,8 @@ document.write(
   '<nav class="nav">' +
     '<div class="nav-title">Yi Hui&rsquo;s internet home</div>' +
     '<div class="nav-links">' +
-      '<a href="index.html" id="navHome">Home</a>, ' +
-      '<a href="about.html" id="navAbout">About</a>, ' +
+      '<a href="https://yihuiyihui.github.io/home/" id="navHome">Home</a>, ' +
+      '<a href="https://yihuiyihui.github.io/about/" id="navAbout">About</a>, ' +
       '<a href="https://yihuichan.com/">Blog</a>, <a href="https://yihuichan.com/work/">Work</a>' +
     '</div>' +
     '<div class="nav-feeling" id="feelingTrigger">' +
