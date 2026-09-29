@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
 <style>
   :root {
     box-sizing: border-box;
@@ -67,21 +68,8 @@
   }
   html.photo-hover-active .ambient-fullscreen { opacity: 1; }
 
-  /* ---------- Nav background: spans the FULL viewport edge-to-edge,
-       independent of the scaled canvas, on any screen wider or
-       narrower than the 1512px design. ---------- */
-  .nav-bg-fill {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 72px;
-    z-index: 1;
-    background: var(--nav-bg);
-    backdrop-filter: blur(2px);
-    transition: opacity 0.4s ease;
-  }
-  body.is-mobile .nav-bg-fill { display: none; }
-  html.photo-hover-active .nav-bg-fill { opacity: 0; pointer-events: none; }
+
+
 
   /* ---------- Scale stage: the canvas is a fixed 1512x982 design,
        scaled as a single unit to fit whatever screen it's on, so
@@ -103,67 +91,6 @@
     height: 982px;
     transform-origin: top center;
   }
-
-  /* ---------- Nav ---------- */
-  .nav {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 72px;
-    z-index: 3;
-    transition: opacity 0.4s ease;
-  }
-  .nav-title {
-    position: absolute;
-    left: 40px; top: 25px;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 17px;
-    color: var(--ink);
-    white-space: nowrap;
-  }
-  .nav-links {
-    position: absolute;
-    left: 231px; top: 27px;
-    font-style: italic;
-    font-size: 12px;
-    line-height: 15px;
-    color: var(--lav);
-    white-space: nowrap;
-  }
-  .nav-links a { color: inherit; text-decoration: none; }
-  .nav-links a:hover { color: var(--ink); }
-  .nav-links a.current { text-decoration: underline; text-decoration-skip-ink: none; }
-  .nav-feeling {
-    position: absolute;
-    right: 40px; top: 19px;
-    width: 230px;
-    text-align: left;
-    font-style: italic;
-    font-size: 12px;
-    line-height: 17px;
-    color: var(--lav);
-    cursor: default;
-    transition: color .35s ease;
-  }
-  .nav-feeling:hover { color: var(--lav-dim); }
-  .nav-feeling p { margin: 0; }
-  html.photo-hover-active .nav-feeling { opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
-
-  /* ---------- Feeling hover photo (top right) ---------- */
-  .feeling-photo {
-    position: fixed;
-    right: 40px; top: 60px;
-    width: 322px; height: 429px;
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity .5s ease, transform .5s ease;
-    pointer-events: none;
-    overflow: hidden;
-    z-index: 4;
-  }
-  .feeling-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .feeling-photo.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
   /* ---------- Sidebar text blocks (heights match the Figma text-box
        heights exactly, so spacing stays tight and content stays
@@ -265,37 +192,6 @@
     height: auto !important;
     transform: none !important;
     padding: 92px 6% 56px;
-  }
-  body.is-mobile .nav {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: auto;
-    min-height: 56px;
-    background: var(--nav-bg);
-    backdrop-filter: blur(2px);
-    padding: 12px 5%;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    row-gap: 6px;
-    z-index: 10;
-  }
-  body.is-mobile .nav-title {
-    position: static;
-    font-size: 12px;
-    line-height: normal;
-  }
-  body.is-mobile .nav-links {
-    position: static;
-    font-size: 12px;
-    line-height: normal;
-    white-space: normal;
-  }
-  body.is-mobile .nav-feeling { display: none; }
-  body.is-mobile .feeling-photo { display: none; }
-  body.is-mobile .ambient-fullscreen { display: none; }
 
   body.is-mobile .selected-works,
   body.is-mobile .media-rotation,
