@@ -6,7 +6,7 @@ document.write(
     '<div class="nav-title">Yi Hui&rsquo;s internet home</div>' +
     '<div class="nav-links">' +
       '<a href="https://yihuiyihui.github.io/home/" id="navHome">Home</a>, ' +
-      '<a href="https://yihuiyihui.github.io/about/" id="navAbout">About</a>, ' +
+      '<a href="https://yihuiyihui.github.io/home/about/" id="navAbout">About</a>, ' +
       '<a href="https://yihuichan.com/">Blog</a>, <a href="https://yihuichan.com/work/">Work</a>' +
     '</div>' +
     '<div class="nav-feeling" id="feelingTrigger">' +
@@ -15,7 +15,7 @@ document.write(
     '</div>' +
   '</nav>' +
   '<div class="feeling-photo" id="feelingPhoto">' +
-    '<img src="assets/images/assets/images/IMG_9708.png" alt="Beach, Okinawa">' +
+    '<img src="assets/images/IMG_9708.png" alt="Beach, Okinawa">' +
   '</div>'
 );
 
