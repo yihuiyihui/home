@@ -33,16 +33,6 @@
   a { color: var(--ink); text-decoration: none; transition: color 0.3s ease; }
 a:hover { color: var(--lav); }
 
-  .nav-bg-fill {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 72px;
-    z-index: 1;
-    background: var(--nav-bg);
-    backdrop-filter: blur(12px);
-  }
-  body.is-mobile .nav-bg-fill { display: none; }
 
   /* ---------- Scale stage: fixed 1512-wide design, scaled as one
        unit to fit the screen width (never past its true 1:1 size).
@@ -65,64 +55,7 @@ a:hover { color: var(--lav); }
     transform-origin: top center;
   }
 
-  /* ---------- Nav ---------- */
-  .nav {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 72px;
-    z-index: 3;
-  }
-  .nav-title {
-    position: absolute;
-    left: 40px; top: 25px;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 17px;
-    color: var(--ink);
-    white-space: nowrap;
-  }
-  .nav-links {
-    position: absolute;
-    left: 231px; top: 27px;
-    font-style: italic;
-    font-size: 12px;
-    line-height: 15px;
-    color: var(--lav);
-    white-space: nowrap;
-  }
-  .nav-links a { color: inherit; text-decoration: none; }
-  .nav-links a:hover { color: var(--ink); }
-  .nav-links a.current { text-decoration: underline; text-decoration-skip-ink: none; }
-  .nav-feeling {
-    position: absolute;
-    right: calc(50vw - 716px); top: 19px;
-    width: 230px;
-    text-align: left;
-    font-style: italic;
-    font-size: 12px;
-    line-height: 17px;
-    color: var(--lav);
-    cursor: default;
-    transition: color .35s ease;
-  }
-  .nav-feeling:hover { color: var(--lav-dim); }
-  .nav-feeling p { margin: 0; }
 
-  /* ---------- Feeling hover photo (top right) — same behaviour as Home ---------- */
-  .feeling-photo {
-    position: fixed;
-    right: calc(50vw - 716px); top: 60px;
-    width: 322px; height: 429px;
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity .5s ease, transform .5s ease;
-    pointer-events: none;
-    overflow: hidden;
-    z-index: 4;
-  }
-  .feeling-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .feeling-photo.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
   /* ---------- Social row: sits as a footer at the true end of the
        page (About scrolls, unlike Home, so this stays in normal flow
@@ -373,25 +306,7 @@ a:hover { color: var(--lav); }
     transform: none !important;
     padding: 88px 6% 64px;
   }
-  body.is-mobile .nav {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: auto;
-    background: var(--nav-bg);
-    backdrop-filter: blur(2px);
-    padding: 12px 5%;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    row-gap: 6px;
-    z-index: 10;
-  }
-  body.is-mobile .nav-title { position: static; font-size: 12px; }
-  body.is-mobile .nav-links { position: static; font-size: 12px; white-space: normal; }
-  body.is-mobile .nav-feeling { display: none; }
-  body.is-mobile .feeling-photo { display: none; }
+  
   body.is-mobile .social-row {
     max-width: none;
     width: 100%;
