@@ -7,15 +7,15 @@ document.write(
     '<div class="nav-links">' +
       '<a href="index.html" id="navHome">Home</a>, ' +
       '<a href="about.html" id="navAbout">About</a>, ' +
-      '<a href="#">Blog</a>, <a href="#">Work</a>' +
+      '<a href="https://yihuichan.com/">Blog</a>, <a href="https://yihuichan.com/work/">Work</a>' +
     '</div>' +
     '<div class="nav-feeling" id="feelingTrigger">' +
-      '<p>Currently feeling&hellip;</p>' +
+      '<p>Currently feeling...</p>' +
       '<p>Missing the ocean breeze in Okinawa</p>' +
     '</div>' +
   '</nav>' +
   '<div class="feeling-photo" id="feelingPhoto">' +
-    '<img src="assets/images/IMG_9708.JPG" alt="Beach umbrellas, Okinawa">' +
+    '<img src="assets/images/assets/images/IMG_9708.png" alt="Beach, Okinawa">' +
   '</div>'
 );
 
