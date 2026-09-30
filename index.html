@@ -102,8 +102,8 @@
   .block a { color: inherit; text-decoration: none; transition: color 0.35s ease; }
   .block a:hover { color: var(--lav-dim); }
 
-  .selected-works { left: 163px; top: 275px; width: 186px; height: 75px; }
-  .media-rotation { left: 166px; top: 611px; width: 183px; height: 90px; }
+  .selected-works { left: 163px; top: 275px; width: 186px; height: 100px; }
+  .media-rotation { left: 166px; top: auto; bottom: 275px; width: 183px; height: 90px; }
 
   /* ---------- Center photo ---------- */
   .photo-stage {
@@ -174,6 +174,7 @@
 
   /* ---------- Hide chrome while the center photo is hovered ---------- */
   html.photo-hover-active .nav,
+  html.photo-hover-active .nav-bg-fill,
   html.photo-hover-active .selected-works,
   html.photo-hover-active .media-rotation,
   html.photo-hover-active .social-row {
