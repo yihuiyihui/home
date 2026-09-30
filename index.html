@@ -171,15 +171,6 @@
   .social-row a { color: inherit; text-decoration: none; transition: color 0.35s ease; }
   .social-row a:hover { color: var(--lav-dim); }
 
-  /* ---------- Hide chrome while the center photo is hovered ---------- */
-  html.photo-hover-active .nav,
-  html.photo-hover-active .nav-bg-fill,
-  html.photo-hover-active .selected-works,
-  html.photo-hover-active .media-rotation,
-  html.photo-hover-active .social-row {
-    opacity: 1;
-    pointer-events: auto;
-  }
 
   /* ---------- Mobile: nav stays visible (title + links), everything
        else flows in a simple single column. ---------- */
@@ -386,12 +377,10 @@
     html.classList.remove('photo-hover-active');
   });
 
-  stage.addEventListener('touchstart', function (e) {
-    e.preventDefault();
-    stage.classList.toggle('is-hovering');
-    html.classList.toggle('photo-hover-active', active);
-  }, { passive: false });
-})();
+stage.addEventListener('touchstart', function (e) {
+  e.preventDefault();
+  stage.classList.toggle('is-hovering');
+}, { passive: false });
 </script>
 </body>
 </html>
