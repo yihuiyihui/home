@@ -19,7 +19,8 @@
 body.is-mobile .nav-bg-fill { display: none; }
 
 body.is-mobile .nav {
-  position: static;
+  position: relative;
+  z-index: 3;
   width: auto;
   height: auto;
   padding: 24px 6% 10px;
