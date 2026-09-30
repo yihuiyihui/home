@@ -172,6 +172,17 @@
   .social-row a:hover { color: var(--lav-dim); }
 
 
+    /* ---------- Hide content when hovered ---------- */
+  
+  html.photo-hover-active .nav,
+html.photo-hover-active .nav-bg-fill,
+html.photo-hover-active .selected-works,
+html.photo-hover-active .media-rotation,
+html.photo-hover-active .social-row {
+  opacity: 0;
+  pointer-events: none;
+}
+
   /* ---------- Mobile: nav stays visible (title + links), everything
        else flows in a simple single column. ---------- */
   body.is-mobile .stage-wrap { overflow: visible; }
