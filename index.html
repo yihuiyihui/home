@@ -224,9 +224,8 @@
     width: 100%; height: 60vw; max-height: 420px;
     display: block;
   }
-  body.is-mobile .intro-text {
+    body.is-mobile .intro-text {
     position: static;
-    opacity: 1 !important;
     width: 100%; height: auto;
     font-size: 12px;
     line-height: 1.6;
@@ -234,7 +233,21 @@
     color: var(--ink);
     text-shadow: none;
   }
-  body.is-mobile .caption-text { display: none; }
+  body.is-mobile .caption-text {
+    position: static;
+    display: none;
+    opacity: 1;
+    transform: none;
+    width: 100%; height: auto;
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 16px 0 0;
+    color: var(--ink);
+    text-shadow: none;
+    pointer-events: auto;
+  }
+  body.is-mobile .photo-stage.is-hovering .intro-text { display: none; }
+  body.is-mobile .photo-stage.is-hovering .caption-text { display: block; }
   body.is-mobile .media-rotation { margin-bottom: 32px; }
   body.is-mobile .social-row { display: block; text-align: left; }
 
