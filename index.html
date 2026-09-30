@@ -177,8 +177,8 @@
   html.photo-hover-active .selected-works,
   html.photo-hover-active .media-rotation,
   html.photo-hover-active .social-row {
-    opacity: 0;
-    pointer-events: none;
+    opacity: 1;
+    pointer-events: auto;
   }
 
   /* ---------- Mobile: nav stays visible (title + links), everything
@@ -389,6 +389,7 @@
   stage.addEventListener('touchstart', function (e) {
     e.preventDefault();
     stage.classList.toggle('is-hovering');
+    html.classList.toggle('photo-hover-active', active);
   }, { passive: false });
 })();
 </script>
