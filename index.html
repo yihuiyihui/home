@@ -371,6 +371,7 @@
   var hoverTimer = null;
 
   stage.addEventListener('mouseenter', function () {
+    if (document.body.classList.contains('is-mobile')) return;
     clearTimeout(hoverTimer);
     hoverTimer = setTimeout(function () {
       stage.classList.add('is-hovering');
@@ -379,6 +380,7 @@
   });
 
   stage.addEventListener('mouseleave', function () {
+    if (document.body.classList.contains('is-mobile')) return;
     clearTimeout(hoverTimer);
     stage.classList.remove('is-hovering');
     html.classList.remove('photo-hover-active');
@@ -386,8 +388,7 @@
 
   stage.addEventListener('touchstart', function (e) {
     e.preventDefault();
-    var active = stage.classList.toggle('is-hovering');
-    html.classList.toggle('photo-hover-active', active);
+    stage.classList.toggle('is-hovering');
   }, { passive: false });
 })();
 </script>
