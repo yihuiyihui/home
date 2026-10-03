@@ -13,8 +13,8 @@
   height: 72px;
   z-index: 3;
   background: var(--nav-bg);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
 }
 body.is-mobile .nav-bg-fill { display: none; }
 
