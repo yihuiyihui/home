@@ -74,7 +74,7 @@ body.is-mobile .feeling-photo { display: none; }
   position: absolute;
   right: var(--feeling-right); top: 19px;
   width: 230px;
-  text-align: left;
+  text-align: right;
   font-style: italic;
   font-size: 12px;
   line-height: 17px;
