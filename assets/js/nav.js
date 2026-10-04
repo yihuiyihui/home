@@ -7,7 +7,7 @@ document.write(
     '<div class="nav-links">' +
       '<a href="https://yihuiyihui.github.io/home/" id="navHome">Home</a>, ' +
       '<a href="https://yihuiyihui.github.io/home/about.html" id="navAbout">About</a>, ' +
-      '<a href="https://yihuichan.com/">Blog</a>, <a href="https://yihuichan.com/work/">Work</a>' +
+      '<a href="https://yihuiyihui.github.io/home/writing.html">Writing</a>, <a href="https://yihuichan.com/work/">Work</a>' +
     '</div>' +
     '<div class="nav-feeling" id="feelingTrigger">' +
       '<p>Currently feeling...</p>' +
@@ -20,9 +20,11 @@ document.write(
 );
 
 // Mark the current page's nav link so it gets the "current" styling.
-(function () {
-  var path = window.location.pathname.split('/').pop() || 'index.html';
-  var currentId = (path === 'about.html') ? 'navAbout' : 'navHome';
-  var link = document.getElementById(currentId);
-  if (link) { link.classList.add('current'); }
-})();
+   (function () {
+     var path = window.location.pathname.split('/').pop() || 'index.html';
+     var currentId = (path === 'about.html') ? 'navAbout'
+       : (path === 'writing.html') ? 'navWriting'
+       : 'navHome';
+     var link = document.getElementById(currentId);
+     if (link) { link.classList.add('current'); }
+   })();
