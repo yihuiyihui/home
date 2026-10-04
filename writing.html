@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Writing — Yi Hui's internet home</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --ink: #12566d;
+    --lav: #aa8dab;
+    --lav-dim: rgba(170,141,171,0.6);
+    --paper: #f4f7fa;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: #fff;
+    color: #000;
+    font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: var(--ink); text-decoration: none; transition: color 0.3s ease; }
+  a:hover { color: var(--lav); }
+
+  /* ---------- Scale stage: fixed 1512-wide design, scaled as one
+       unit to fit the screen width (never past its true 1:1 size).
+       Like About, this page's content can run taller than one
+       screen, so it scrolls naturally rather than being height-capped. ---------- */
+  .stage-wrap {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    overflow: hidden;
+  }
+  .canvas {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    margin-left: -756px; /* half of 1512px design width, for centering */
+    width: 1512px;
+    height: 982px;
+    transform-origin: top center;
+  }
+
+  /* ---------- Social row: sits as a footer at the true end of the
+       page (this page scrolls, so it stays in normal flow instead of
+       floating fixed over content as you scroll). ---------- */
+  .social-row {
+    max-width: 1512px;
+    margin: 0 auto;
+    padding: 24px 40px 48px;
+    text-align: right;
+    font-size: 13px;
+    color: var(--lav);
+  }
+  .social-row a { color: inherit; text-decoration: none; transition: color 0.35s ease; }
+  .social-row a:hover { color: var(--lav-dim); }
+
+  /* ---------- Quote + body: one text column. Spacing between the
+       quote and the body list is a real margin (not two independent
+       hard-coded top values), so it stays correct even if the quote
+       wraps to a different number of lines. ---------- */
+  .writing-text {
+    position: absolute;
+    left: 163px; top: 327px;
+    width: 722px;
+  }
+  .writing-quote {
+    margin: 0 0 28px;
+    width: 687px;
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: #000;
+  }
+  .writing-body {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.7;
+    color: #000;
+  }
+  .writing-body p { margin: 0 0 20px; }
+  .writing-body p:last-child { margin-bottom: 0; }
+  .writing-body a {
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  .writing-body a:hover { color: var(--lav); }
+  .writing-note { font-style: italic; }
+
+  /* ---------- Photo ---------- */
+  .writing-photo {
+    position: absolute;
+    left: 979px; top: 108px;
+    width: 493px; height: 740px;
+    overflow: hidden;
+  }
+  .writing-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* ---------- Mobile ---------- */
+  body.is-mobile .stage-wrap { overflow: visible; }
+  body.is-mobile .canvas {
+    position: static !important;
+    left: auto !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    transform: none !important;
+    padding: 88px 6% 64px;
+  }
+
+  body.is-mobile .social-row {
+    max-width: none;
+    width: 100%;
+    text-align: left;
+    padding: 0 6%;
+    margin-top: 40px;
+  }
+
+  body.is-mobile .writing-photo {
+    position: static;
+    width: 100%;
+    height: 80vw;
+    max-height: 480px;
+    margin-bottom: 32px;
+  }
+  body.is-mobile .writing-text {
+    position: static;
+    width: 100%;
+  }
+  body.is-mobile .writing-quote {
+    width: 100%;
+    font-size: 24px;
+    margin-bottom: 28px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+  <script src="assets/js/nav.js"></script>
+
+  <div class="stage-wrap" id="stageWrap">
+    <div class="canvas" id="canvas">
+
+      <div class="writing-photo">
+        <img src="assets/images/Manzamo.JPG" alt="Manzamo">
+      </div>
+
+      <div class="writing-text">
+        <div class="writing-quote">
+          <p>&ldquo;I write entirely to find out what I&rsquo;m thinking, what I&rsquo;m looking at, what I see and what it means. What I want and what I fear.&rdquo; &mdash; Joan Didion</p>
+        </div>
+        <div class="writing-body">
+          <p><a href="https://yihuiwrites.substack.com/">Spaces in between</a>: My latest writings can be found on my Substack.</p>
+          <p><a href="https://yihui.substack.com/">Slice of life</a>: My writings about lessons I learn from anime can be found on my other Substack.</p>
+          <p><a href="#">Archive</a>: All my blog posts can be found in my archive.</p>
+          <p class="writing-note">Note: Older posts may no longer feel like the present me, but I&rsquo;m thankful for how they have shaped me.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+    <script src="assets/js/footer.js"></script>
+
+<script>
+(function () {
+  var stageWrap = document.getElementById('stageWrap');
+  var canvas = document.getElementById('canvas');
+  var body = document.body;
+  var DESIGN_W = 1512;
+  var MOBILE_BREAKPOINT = 720;
+
+  function applyScale() {
+    var vw = window.innerWidth;
+    if (vw <= MOBILE_BREAKPOINT) {
+      body.classList.add('is-mobile');
+      stageWrap.style.height = 'auto';
+      return;
+    }
+    body.classList.remove('is-mobile');
+    var scale = Math.min(vw / DESIGN_W, 1);
+    var h = canvas.offsetHeight;
+    canvas.style.transform = 'scale(' + scale + ')';
+    stageWrap.style.height = (h * scale) + 'px';
+  }
+
+  window.addEventListener('resize', applyScale);
+  applyScale();
+})();
+</script>
+</body>
+</html>
