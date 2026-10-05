@@ -28,3 +28,13 @@ document.write(
      var link = document.getElementById(currentId);
      if (link) { link.classList.add('current'); }
    })();
+
+// Open only external links in a new tab.
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('a[href]').forEach(function (a) {
+    if (a.hostname && a.hostname !== window.location.hostname) {
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+});
