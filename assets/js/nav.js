@@ -7,7 +7,7 @@ document.write(
     '<div class="nav-links">' +
       '<a href="https://yihuiyihui.github.io/home/" id="navHome">Home</a>, ' +
       '<a href="https://yihuiyihui.github.io/home/about.html" id="navAbout">About</a>, ' +
-      '<a href="https://yihuiyihui.github.io/home/writing.html">Writing</a>, <a href="https://yihuichan.com/work/">Work</a>' +
+      '<a href="https://yihuiyihui.github.io/home/writing.html">Writing</a>, <a href="https://chanyihui.notion.site/Chan-Yi-Hui-3e5afc151b57808595e4df3a71dd505e">Work</a>' +
     '</div>' +
     '<div class="nav-feeling" id="feelingTrigger">' +
       '<p>Currently feeling...</p>' +
