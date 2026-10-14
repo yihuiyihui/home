@@ -162,6 +162,35 @@ a:hover { color: var(--lav); }
     color: #000;
   }
 
+/* "Past": same two-column look as "Now", but rows flow in a grid
+   instead of fixed tops, so you can add as many rows as you like. */
+.past-list {
+  position: absolute;
+  left: 0; top: 842px;
+  width: 1512px;
+  display: grid;
+  grid-template-columns: 492px 740px; /* label's right edge = 1512-1020 = 492 */
+  column-gap: 41px;                   /* desc starts at 492 + 41 = 533 */
+  row-gap: 28px;
+}
+.past-list .cat-label,
+.past-list .cat-desc {
+  position: static;
+  width: auto;
+  line-height: 1.4; /* keeps label and desc baselines aligned */
+}
+
+/* Bullet lists inside a description */
+.cat-desc ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+.cat-desc ul:first-child { margin-top: 0; } /* bullets only, no description text */
+.cat-desc li { margin: 0 0 4px; }
+.cat-desc li:last-child { margin-bottom: 0; }
+
+
+  
   /* "Why internet home" */
   .why-photo {
     position: absolute;
@@ -332,6 +361,10 @@ a:hover { color: var(--lav); }
   body.is-mobile .cat-label { position: static; text-align: left; margin-bottom: 4px; display: block; }
   body.is-mobile .cat-desc { position: static; width: 100%; display: block; }
 
+body.is-mobile .past-list { position: static; width: 100%; display: block; }
+body.is-mobile .past-list .cat-label { display: block; text-align: left; margin-bottom: 4px; }
+body.is-mobile .past-list .cat-desc { display: block; margin-bottom: 24px; }
+  
   body.is-mobile .why-photo { position: static; width: 100%; height: 60vw; max-height: 360px; margin-bottom: 20px; }
   body.is-mobile .why-text { position: static; width: 100%; }
 
@@ -377,11 +410,12 @@ body.is-mobile .fav-card.placeholder.hoverable:hover .fav-label {
         </div>
       </div>
 
-      <div class="sub-nav" id="subNav">
-        <button type="button" class="active" data-tab="now" data-h="1460">Now</button>
-        <button type="button" data-tab="why" data-h="1300">Why internet home</button>
-        <button type="button" data-tab="favourites" data-h="2790">Favourites</button>
-      </div>
+<div class="sub-nav" id="subNav">
+  <button type="button" class="active" data-tab="now" data-auto-height>Now</button>
+  <button type="button" data-tab="past" data-auto-height>Past</button>
+  <button type="button" data-tab="why" data-auto-height>Why internet home</button>
+  <button type="button" data-tab="favourites" data-auto-height>Favourites</button>
+</div>
 
       <div class="tab-panel active" id="tab-now">
         <div class="cat-row" style="top:842px">
@@ -417,6 +451,42 @@ body.is-mobile .fav-card.placeholder.hoverable:hover .fav-label {
         </div>
       </div>
 
+<div class="tab-panel" id="tab-past">
+  <div class="past-list" id="past-list">
+    <div class="cat-label">Oct 2026</div>
+    <div class="cat-desc">
+       <ul>
+    <li>New personal website - you're here now!</div></li>
+    <li>Talk: Spoke about how to surf the internet again at <a href="https://www.instagram.com/p/Dea5qcwD-kk">Sunward Club</a></li>
+  </ul>
+    </div>
+
+    <div class="cat-label">Aug 2026</div>
+    <div class="cat-desc">
+        <ul>
+    <li>Co-organised <a href="https://www.instagram.com/gentle.cosmos/">Garden Symphony</a> group art exhibition</div></li>
+    <li>Exhibited <a href="https://www.instagram.com/p/DcBNewokYIO">my art piece</a></li>
+    <li>Co-hosted <a href="https://htmlday-kl.neocities.org/">HTML energy</a> in KL</li> 
+  </ul>
+    </div>
+
+    <div class="cat-label">2025</div>
+    <div class="cat-desc">
+        <ul>
+    <li>Cohosted three workshops: With IKAN Glampsite and Mossery.</div></li>
+    <li>Started Instagram account about the internet <a href="https://www.instagram.com/tendersignals">@tendersignals</a></li>
+  </ul>
+    </div>
+
+        <div class="cat-label">2022</div>
+    <div class="cat-desc">Volunteered at KL Art Book Fair</div>
+
+    <div class="cat-label">2021(Ongoing)</div>
+    <div class="cat-desc">Built and launched <a href="https://buttermilkart.netlify.app/">Buttermilk</a>: A directory to discover Malaysian artists. Featured on The Star & Vulcan Post.</div>
+    </div>
+    
+</div>
+      
       <div class="tab-panel" id="tab-why">
         <div class="why-photo">
           <img src="assets/images/why-internet.png" alt="Ocean">
@@ -635,11 +705,36 @@ body.is-mobile .fav-card.placeholder.hoverable:hover .fav-label {
   var buttons = document.querySelectorAll('.sub-nav button');
   var panels = document.querySelectorAll('.tab-panel');
 
-  function setCanvasHeightForTab(btn) {
-    var h = btn.getAttribute('data-h');
-    if (h) { canvas.style.height = h + 'px'; }
-    if (window.applyScale) { window.applyScale(); }
-  }
+var PAGE_BOTTOM_PADDING = 100; // space under the lowest content
+var DESIGN_W = 1512;
+
+// Finds the lowest edge of the active tab's content (in design pixels)
+// and sizes the canvas to fit it, so every tab grows with its content.
+function measureActivePanel(panel) {
+  var scale = canvas.getBoundingClientRect().width / DESIGN_W || 1;
+  var canvasTop = canvas.getBoundingClientRect().top;
+  var bottom = 0;
+  panel.querySelectorAll('.cat-label, .cat-desc, .why-photo, .why-text, .fav-intro, .fav-grid').forEach(function (el) {
+    var b = (el.getBoundingClientRect().bottom - canvasTop) / scale;
+    if (b > bottom) { bottom = b; }
+  });
+  return Math.ceil(bottom);
+}
+
+function setCanvasHeightForTab(btn) {
+  var panel = document.getElementById('tab-' + btn.dataset.tab);
+  var h = measureActivePanel(panel) + PAGE_BOTTOM_PADDING;
+  canvas.style.height = h + 'px';
+  if (window.applyScale) { window.applyScale(); }
+}
+
+// Re-measure once web fonts load, since text wrapping can change the height
+function refreshActiveTab() {
+  var active = document.querySelector('.sub-nav button.active');
+  if (active) { setCanvasHeightForTab(active); }
+}
+window.addEventListener('load', refreshActiveTab);
+if (document.fonts && document.fonts.ready) { document.fonts.ready.then(refreshActiveTab); }
 
   buttons.forEach(function (btn) {
     btn.addEventListener('click', function () {
