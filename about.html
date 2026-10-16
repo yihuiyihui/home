@@ -162,19 +162,22 @@ a:hover { color: var(--lav); }
     color: #000;
   }
 
-/* "Past": same two-column look as "Now", but rows flow in a grid
-   instead of fixed tops, so you can add as many rows as you like. */
-.past-list {
+/* "Past" and "Now": two-column rows in a grid, so the gap between rows
+   stays the same no matter how long each description is. */
+.past-list,
+.now-list {
   position: absolute;
   left: 0; top: 842px;
   width: 1512px;
   display: grid;
   grid-template-columns: 492px 740px; /* label's right edge = 1512-1020 = 492 */
   column-gap: 41px;                   /* desc starts at 492 + 41 = 533 */
-  row-gap: 28px;
+  row-gap: 28px;                      /* the consistent gap between categories */
 }
 .past-list .cat-label,
-.past-list .cat-desc {
+.past-list .cat-desc,
+.now-list .cat-label,
+.now-list .cat-desc {
   position: static;
   width: auto;
   line-height: 1.4; /* keeps label and desc baselines aligned */
@@ -362,9 +365,12 @@ a:hover { color: var(--lav); }
   body.is-mobile .cat-label { position: static; text-align: left; margin-bottom: 4px; display: block; }
   body.is-mobile .cat-desc { position: static; width: 100%; display: block; }
 
-body.is-mobile .past-list { position: static; width: 100%; display: block; }
-body.is-mobile .past-list .cat-label { display: block; text-align: left; margin-bottom: 4px; }
-body.is-mobile .past-list .cat-desc { display: block; margin-bottom: 24px; }
+body.is-mobile .past-list,
+body.is-mobile .now-list { position: static; width: 100%; display: block; }
+body.is-mobile .past-list .cat-label,
+body.is-mobile .now-list .cat-label { display: block; text-align: left; margin-bottom: 4px; }
+body.is-mobile .past-list .cat-desc,
+body.is-mobile .now-list .cat-desc { display: block; margin-bottom: 24px; }
   
   body.is-mobile .why-photo { position: static; width: 100%; height: 60vw; max-height: 360px; margin-bottom: 20px; }
   body.is-mobile .why-text { position: static; width: 100%; }
@@ -407,7 +413,7 @@ body.is-mobile .fav-card.placeholder.hoverable:hover .fav-label {
         <div class="about-body">
           <p>I try to stay close to wonder and move through life with curiosity. I don&rsquo;t think it&rsquo;s a naive way to live, because it&rsquo;s the most honest way to be alive. My simplest pleasures are taking a walk, being by the ocean, hopecore memes, and Frieren.</p>
           <p>&nbsp;</p>
-          <p>Shaped by years of internet culture and subculture, my relationship with the internet is what drives my interest in dreaming and hopefully building an internet that's more alive. I also like exploring the intersection between art/design and technology. </p>
+          <p>Shaped by years of internet culture and subculture, my relationship with the internet is what drives my interest in dreaming and hopefully building an internet that's more softer and more thoughtful. I also like exploring the intersection between art/design and technology. </p>
         </div>
       </div>
 
@@ -419,38 +425,34 @@ body.is-mobile .fav-card.placeholder.hoverable:hover .fav-label {
 </div>
 
       <div class="tab-panel active" id="tab-now">
-        <div class="cat-row" style="top:842px">
-          <div class="cat-label"><b>Internet</b></div>
-          <div class="cat-desc">I&rsquo;m dreaming about an internet that is softer and more alive. I&rsquo;m currently planning what&rsquo;s next for my Instagram account <a href="https://www.instagram.com/tendersignals">@tendersignals</a> about building a softer internet. At the same time, I'm designing a tool to remind me to organise my saved texts/links.</div>
-        </div>
-        <div class="cat-row" style="top:912px">
-          <div class="cat-label"><b>Art &amp; Technology</b></div>
-          <div class="cat-desc">In August, I wrapped up a group art exhibition (<a href="https://www.instagram.com/gentle.cosmos/">Garden Symphony</a>) that me and my close friends put together. I had an art piece, connecting what I do online in a physical art form. I&rsquo;m wondering what&rsquo;s next after this.</div>
-        </div>
-        <div class="cat-row" style="top:999px">
-          <div class="cat-label"><b>Writing</b></div>
-          <div class="cat-desc">I write about the (internet) <a href="https://yihuiwrites.substack.com/">spaces in between</a> in life and sometimes <a href="https://yihui.substack.com/">life lessons I learn in anime</a>. </div>
-        </div>
-        <div class="cat-row" style="top:1069px">
-          <div class="cat-label"><b>Photos &amp; Filming</b></div>
-          <div class="cat-desc">I like <a href="https://unsplash.com/@yihuichan">taking photos</a> and <a href="https://www.youtube.com/@yihuic">filming</a>, sometimes film photos too. I'm immortalising my recent trip to Seoul & Busan (South Korea) and Okinawa (Japan) on <a href="https://www.instagram.com/burntmustard/">my IG travel account</a>. I'm also making some postcards and zines out of them too. Will share soon!</div>
-        </div>
-        <div class="cat-row" style="top:1156px">
-          <div class="cat-label"><b>Fitness</b></div>
-          <div class="cat-desc">I’m lifting weights at the gym a few times a week and running at parks 1-2 a week (though runs are on hold until the haze is gone).</div>
-        </div>
-        <div class="cat-row" style="top:1240px">
-          <div class="cat-label"><b>Misc</b></div>
-          <div class="cat-desc">I’m starting to get more interested in sound lately. And thinking of exploring p5.js</div>
-        </div>
-         <div class="cat-row" style="top:1300px">
-          <div class="cat-label"><b>Work</b></div>
-          <div class="cat-desc"> I work as an independent product designer and UX researcher, with a background in product management in tech. I’m available for remote freelance and consultancy work.</div>
-        </div>
-        <div class="cat-row" style="top:1380px">
-          <div class="cat-desc">If you like what I&rsquo;m doing, support me <a href="https://buymeacoffee.com/chanyihui">here</a> by buying me a cup of tea &lt;3</div>
-        </div>
-      </div>
+  <div class="now-list">
+
+    <div class="cat-label"><b>Internet</b></div>
+    <div class="cat-desc">I&rsquo;m dreaming about an internet that is softer and more alive. I&rsquo;m currently planning what&rsquo;s next for my Instagram account <a href="https://www.instagram.com/tendersignals">@tendersignals</a> about building a softer internet. At the same time, I'm designing a tool to remind me to organise my saved texts/links.</div>
+
+    <div class="cat-label"><b>Art &amp; Technology</b></div>
+    <div class="cat-desc">In August, I wrapped up a group art exhibition (<a href="https://www.instagram.com/gentle.cosmos/">Garden Symphony</a>) that me and my close friends put together. I had an art piece, connecting what I do online in a physical art form. I&rsquo;m wondering what&rsquo;s next after this.</div>
+
+    <div class="cat-label"><b>Writing</b></div>
+    <div class="cat-desc">I write about the (internet) <a href="https://yihuiwrites.substack.com/">spaces in between</a> in life and sometimes <a href="https://yihui.substack.com/">life lessons I learn in anime</a>.</div>
+
+    <div class="cat-label"><b>Photos &amp; Filming</b></div>
+    <div class="cat-desc">I like <a href="https://unsplash.com/@yihuichan">taking photos</a> and <a href="https://www.youtube.com/@yihuic">filming</a>, sometimes film photos too. I'm immortalising my recent trip to Seoul &amp; Busan (South Korea) and Okinawa (Japan) on <a href="https://www.instagram.com/burntmustard/">my IG travel account</a>. I'm also making some postcards and zines out of them too. Will share soon!</div>
+
+    <div class="cat-label"><b>Fitness</b></div>
+    <div class="cat-desc">I&rsquo;m lifting weights at the gym a few times a week and running at parks 1-2 a week (though runs are on hold until the haze is gone).</div>
+
+    <div class="cat-label"><b>Misc</b></div>
+    <div class="cat-desc">I&rsquo;m starting to get more interested in sound lately. And thinking of exploring p5.js</div>
+
+    <div class="cat-label"><b>Work</b></div>
+    <div class="cat-desc">I work as an independent product designer and UX researcher, with a background in product management in tech. I'm available for remote freelance and consultancy work.</div>
+
+    <div class="cat-label"></div> <!-- empty label for the tea line -->
+    <div class="cat-desc">If you like what I'm doing, support me <a href="https://buymeacoffee.com/chanyihui">here</a> by buying me a cup of tea <3</div>
+
+  </div>
+</div>
 
 <div class="tab-panel" id="tab-past">
   <div class="past-list" id="past-list">
