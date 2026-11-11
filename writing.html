@@ -67,10 +67,11 @@
        quote and the body list is a real margin (not two independent
        hard-coded top values), so it stays correct even if the quote
        wraps to a different number of lines. ---------- */
-  .writing-text {
-    position: absolute;
-    left: 163px; top: 327px;
-    width: 722px;
+.writing-text {
+  position: absolute;
+  left: 533px; top: 327px;   /* same x as the About page text */
+  width: 722px;
+}
   }
   .writing-quote {
     margin: 0 0 28px;
@@ -97,11 +98,12 @@
   .writing-note { font-style: italic; }
 
   /* ---------- Photo ---------- */
-  .writing-photo {
-    position: absolute;
-    left: 979px; top: 108px;
-    width: 493px; height: 740px;
-    overflow: hidden;
+.writing-photo {
+  position: absolute;
+  left: 40px; top: 108px;    /* same position and size as the About photo */
+  width: 445px; height: 593px;
+  overflow: hidden;
+}
   }
   .writing-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
