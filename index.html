@@ -101,14 +101,26 @@
   .block a { color: inherit; text-decoration: none; transition: color 0.35s ease; }
   .block a:hover { color: var(--lav-dim); }
 
-  .selected-works { left: 163px; top: 275px; width: 186px; height: 100px; }
-  .media-rotation { left: 166px; top: auto; bottom: 275px; width: 183px; height: 90px; }
+ /* Pinned bottom-left on the same bottom line as the social row, so the
+   LAST item of each list lines up with the footer links no matter how
+   many items a list has. */
+.selected-works,
+.media-rotation {
+  position: fixed;
+  bottom: 40px;       /* same as .social-row */
+  height: auto;       /* grows with the list */
+  overflow: visible;
+  white-space: nowrap;
+  z-index: 2;
+}
+.selected-works { left: 40px; }    /* same left edge as "Yi Hui's internet home" */
+.media-rotation { left: 286px; }   /* from your Figma */
 
   /* ---------- Center photo ---------- */
   .photo-stage {
     position: absolute;
     left: 398px; top: 275px;
-    width: 715px; height: 432px;
+    width: 858px; height: 518px;
     z-index: 2;
   }
   .photo-box {
@@ -160,6 +172,7 @@
 .social-row {
   position: fixed;
   right: 40px; bottom: 40px;
+  line-height: 1.4;    
   text-align: right;
   white-space: nowrap;
   z-index: 2;
@@ -196,9 +209,14 @@ html.photo-hover-active .social-row {
     position: static;
     width: 100%;
     height: auto;
-    left: auto; top: auto;
+    left: auto; top: auto; bottom: auto;
     overflow: visible;
     line-height: 1.9;
+  }
+  body.is-mobile .selected-works,
+body.is-mobile .media-rotation {
+  padding: 0 6%;
+  white-space: normal;
   }
   body.is-mobile .social-row {
     position: relative;
@@ -269,27 +287,6 @@ html.photo-hover-active .social-row {
 
   <div class="stage-wrap" id="stageWrap">
     <div class="canvas" id="canvas">
-      
-
-      
-
-      <div class="block selected-works">
-        <h3>Selected works</h3>
-        <ul>
-          <li><a href="https://yihuiwrites.substack.com/p/mid-year-reflections-for-2026"> + Mid year reflections 2026</a></li>
-          <li><a href="https://www.instagram.com/gentle.cosmos/"> + Garden Symphony exhibition</a></li>
-          <li><a href="https://htmlday-kl.neocities.org/"> + HTML energy in KL</a></li>
-        </ul>
-      </div>
-
-      <div class="block media-rotation">
-        <h3>Current media rotation</h3>
-        <ul>
-          <li><a href="https://www.fuktmagazine.com/shop/23"> + FUKT #23 - Sound Issue</a></li>
-          <li><a href="https://mydramalist.com/760859-jia-jin-chai"> + Where the Mask Ends</a></li>
-          <li><a href="https://www.livechart.me/fall-2026/tv"> + Autumn anime 2026! E.g. Koori no Jouheki</a></li>
-        </ul>
-      </div>
 
       <div class="photo-stage" id="photoStage">
         <div class="photo-box">
@@ -309,8 +306,27 @@ html.photo-hover-active .social-row {
         </div>
       </div>
 
-      
     </div>
+  </div>
+
+  <!-- Moved OUTSIDE the scaled canvas so they pin to the bottom of the
+       window on the same line as the social row. -->
+  <div class="block selected-works">
+    <h3>Selected works</h3>
+    <ul>
+      <li><a href="https://yihuiwrites.substack.com/p/mid-year-reflections-for-2026"> + Mid year reflections 2026</a></li>
+      <li><a href="https://www.instagram.com/gentle.cosmos/"> + Garden Symphony exhibition</a></li>
+      <li><a href="https://htmlday-kl.neocities.org/"> + HTML energy in KL</a></li>
+    </ul>
+  </div>
+
+  <div class="block media-rotation">
+    <h3>Current media rotation</h3>
+    <ul>
+      <li><a href="https://www.fuktmagazine.com/shop/23"> + FUKT #23 - Sound Issue</a></li>
+      <li><a href="https://mydramalist.com/760859-jia-jin-chai"> + Where the Mask Ends</a></li>
+      <li><a href="https://www.livechart.me/fall-2026/tv"> + Autumn anime 2026! E.g. Koori no Jouheki</a></li>
+    </ul>
   </div>
 
     <script src="assets/js/footer.js"></script>
